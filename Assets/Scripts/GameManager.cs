@@ -1,16 +1,23 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class GameManager : MonoBehaviour
 {
-    public int Round = 0; // current round number
-    public int _ball = 0; // 0 = first ball, 1 = second, ...
-    public int[] PinsKnockedOver; // track pins hit per ball
-    public int[] RoundScore; // final score per round
-    private BallSpawn ballSpawn; // create instance of BallSpawn script object
-    public static GameManager Instance; // create instance for single access
-    public Pin[] pins; // create array for all 10 pins ==> manually added in Unity
+    public int Round = 1;
+    public int _ball = 0; // 0 = first ball, 1 = second ball
+    public int totalRounds = 5;
+    public int totalScore = 0;
+    public int lastThrowPins = 0;
+    public int[] PinsKnockedOver;
+    public int[] RoundScore;
+    public Pin[] pins;
+    public string message = "";
+    public bool gameOver = false;
+
+    private BallSpawn ballSpawn;
+    private BowlingUI ui;
+    private bool waitingForPins = false;
+    public static GameManager Instance;
 
 
     private void Awake() 
@@ -25,75 +32,136 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        // Initialize arrays to prevent IndexOutOfRange errors ==> I added this in code, course added this in Unity
-        PinsKnockedOver = new int[2];  // One slot per ball
-        RoundScore = new int[10];      // Adjust if you want more than 10 rounds
-        // grab BallSpawn ref from scene
-        ballSpawn = FindAnyObjectByType<BallSpawn>(); 
+        PinsKnockedOver = new int[2];
+        RoundScore = new int[totalRounds];
+        ballSpawn = FindAnyObjectByType<BallSpawn>();
+        ui = FindAnyObjectByType<BowlingUI>();
     }
 
-    private void Update() 
+    private void Start()
     {
-        // start first round with space key
-        if (Input.GetKeyDown(KeyCode.Space) && Round == 0)
+        StartGame();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
         {
-            StartNewRound();
+            UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
         }
     }
 
     public void BallReachedReturn()
     {
-        // start pin check after ball returns
+        if (waitingForPins || gameOver)
+        {
+            return;
+        }
+
         StartCoroutine(CheckforFallenPins());
     }
 
 
     private IEnumerator CheckforFallenPins()
     {
-        // give pins time to settle to determine if fallen
-        yield return new WaitForSeconds(2f); 
+        waitingForPins = true;
+        message = "Checking pins...";
+        UpdateUI();
 
-        // count knocked-over pins
-        for (int i = 0; i < pins.Length; i++)
+        yield return new WaitForSeconds(2f);
+
+        int fallenPins = CountFallenPins();
+        lastThrowPins = fallenPins;
+
+        if (_ball == 1)
         {
-            if (pins[i].IsPinKnockedOver())
+            lastThrowPins = Mathf.Max(0, fallenPins - PinsKnockedOver[0]);
+        }
+
+        PinsKnockedOver[_ball] = lastThrowPins;
+        totalScore += lastThrowPins;
+        UpdateUI();
+
+        if (_ball == 0 && fallenPins < pins.Length)
+        {
+            _ball = 1;
+            message = "Second ball";
+            waitingForPins = false;
+            ballSpawn.SpawnNewBall();
+            UpdateUI();
+            yield break;
+        }
+
+        FinishRound();
+    }
+
+    private int CountFallenPins()
+    {
+        int count = 0;
+
+        foreach (Pin pin in pins)
+        {
+            if (pin.IsPinKnockedOver())
             {
-                PinsKnockedOver[_ball]++;
+                count++;
             }
         }
 
-        // adjust second ball score if needed
-        if (_ball == 1)
-        {
-            PinsKnockedOver[_ball] -= PinsKnockedOver[0];
-        }
-        //switch balls or start new round
-        if (_ball == 1)
-        {
-            _ball = 0;
-            StartNewRound();
-        }
-        else
-        {
-            _ball = 1;
-            ballSpawn.SpawnNewBall();
-        }
+        return count;
     }
 
-    public void StartNewRound()
+    private void FinishRound()
     {
-        if (Round != 0) UpdateScore(); // add previous round score
-        ResetPinCount(); // clear pin hit count
-        ResetPins(); //stand pins back up
-        Round++; // next round
-        ballSpawn.SpawnNewBall(); // new ball
+        RoundScore[Round - 1] = PinsKnockedOver[0] + PinsKnockedOver[1];
+
+        if (Round >= totalRounds)
+        {
+            gameOver = true;
+            waitingForPins = false;
+            message = "Game over!";
+            UpdateUI();
+            return;
+        }
+
+        Round++;
+        _ball = 0;
+        ResetPinCount();
+        ResetPins();
+        message = "New round";
+        waitingForPins = false;
+        ballSpawn.SpawnNewBall();
+        UpdateUI();
+    }
+
+    public void StartGame()
+    {
+        Round = 1;
+        _ball = 0;
+        totalScore = 0;
+        lastThrowPins = 0;
+        gameOver = false;
+        waitingForPins = false;
+        message = "Aim with Left/Right, press Space";
+        ResetPinCount();
+        ResetRoundScores();
+        ResetPins();
+        ballSpawn.SpawnNewBall();
+        UpdateUI();
+    }
+
+    private void ResetRoundScores()
+    {
+        for (int i = 0; i < RoundScore.Length; i++)
+        {
+            RoundScore[i] = 0;
+        }
     }
     
-        private void ResetPins()
+    private void ResetPins()
     {
         foreach(Pin pin in pins)
         {
-            pin.ResetPin(); // reset each pin position
+            pin.ResetPin();
         }
     }
 
@@ -101,13 +169,15 @@ public class GameManager : MonoBehaviour
     {
         for(int i = 0; i < PinsKnockedOver.Length; i++)
         {
-            PinsKnockedOver[i] = 0; //clear counts
+            PinsKnockedOver[i] = 0;
         }
     }
 
-    private void UpdateScore()
+    private void UpdateUI()
     {
-        // add both ball's pins to round score
-        RoundScore[Round - 1] = PinsKnockedOver[0] + PinsKnockedOver[1];
+        if (ui != null)
+        {
+            ui.UpdateUI(this);
+        }
     }
 }

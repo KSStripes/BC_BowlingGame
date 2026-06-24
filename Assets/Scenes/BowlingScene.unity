@@ -2067,6 +2067,7 @@ GameObject:
   m_Component:
   - component: {fileID: 894138594}
   - component: {fileID: 894138595}
+  - component: {fileID: 894138596}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -2103,6 +2104,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Round: 0
   _ball: 0
+  totalRounds: 5
+  totalScore: 0
+  lastThrowPins: 0
   PinsKnockedOver: 
   RoundScore: 
   pins:
@@ -2116,6 +2120,20 @@ MonoBehaviour:
   - {fileID: 422920734}
   - {fileID: 1491271208}
   - {fileID: 1967986020}
+  message: 
+  gameOver: 0
+--- !u!114 &894138596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 894138593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77205d03422d4ad88c710068471dce81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &910778544
 PrefabInstance:
   m_ObjectHideFlags: 0
