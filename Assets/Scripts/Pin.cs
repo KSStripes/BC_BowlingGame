@@ -17,8 +17,9 @@ public class Pin : MonoBehaviour
 
     public void ResetPin()
     {
+        GetComponent<Rigidbody>().linearVelocity = Vector3.zero; // stop from moving through space
         GetComponent<Rigidbody>().angularVelocity = Vector3.zero; // stop from spinning
         transform.position = _startPosition; // warp pin back to spawn
-        transform.rotation = new Quaternion(0, 0, 0, 0); // reset rotation
+        transform.rotation = Quaternion.identity; // reset to valid no-rotation quaternion
     }
 }
