@@ -4,9 +4,26 @@ public class Pin : MonoBehaviour
 {
     public float tiltThreshold = 30f; //check for degrees, when reached pin is knocked over
     private Vector3 _startPosition; // spawn point for reset
+    private bool soundPlayed = false;
+    private AudioSource audioSource;
+
     private void Awake()
     {
         _startPosition = transform.position; // save position on scene load
+        audioSource = GetComponent<AudioSource>();
+    }
+
+    private void Update()
+    {
+        if (!soundPlayed && IsPinKnockedOver())
+        {
+            soundPlayed = true;
+
+            if (audioSource != null)
+            {
+                audioSource.Play();
+            }
+        }
     }
 
     public bool IsPinKnockedOver()
@@ -21,5 +38,6 @@ public class Pin : MonoBehaviour
         GetComponent<Rigidbody>().angularVelocity = Vector3.zero; // stop from spinning
         transform.position = _startPosition; // warp pin back to spawn
         transform.rotation = Quaternion.identity; // reset to valid no-rotation quaternion
+        soundPlayed = false;
     }
 }

@@ -7,6 +7,7 @@ public class BallController : MonoBehaviour
 
     private float throwForce;
     private GameManager gameManager;
+    private AudioSource audioSource;
     private ArrowController arrowController;
 
     private bool _thrown = false;
@@ -16,6 +17,7 @@ public class BallController : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
         arrowController = FindAnyObjectByType<ArrowController>();
+        audioSource = GetComponent<AudioSource>();
 
         if (arrowController != null)
         {
@@ -94,6 +96,10 @@ public class BallController : MonoBehaviour
             _thrown = true;
             arrowController.ballThrown = true;
             _rb.AddForce(ArrowPos.forward * throwForce, ForceMode.Impulse);
+            if (audioSource != null)
+            {
+                audioSource.Play();
+            }
         }
     }
 

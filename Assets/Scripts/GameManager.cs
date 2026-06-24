@@ -107,6 +107,7 @@ public class GameManager : MonoBehaviour
 
         PinsKnockedOver[_ball] = lastThrowPins;
         totalScore += lastThrowPins;
+
         UpdateUI();
 
         if (_ball == 0 && fallenPins < pins.Length)
