@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
 
     private BallSpawn ballSpawn;
     private BowlingUI ui;
+    private CameraSwitchTrigger cameraSwitch;
     private bool waitingForPins = false;
     public static GameManager Instance;
 
@@ -61,6 +62,7 @@ public class GameManager : MonoBehaviour
         RoundScore = new int[totalRounds];
         ballSpawn = FindAnyObjectByType<BallSpawn>();
         ui = FindAnyObjectByType<BowlingUI>();
+        cameraSwitch = FindAnyObjectByType<CameraSwitchTrigger>();
     }
 
     private void Start()
@@ -115,7 +117,7 @@ public class GameManager : MonoBehaviour
             _ball = 1;
             message = "Second ball";
             waitingForPins = false;
-            ballSpawn.SpawnNewBall();
+            SpawnBallAndResetCamera();
             UpdateUI();
             yield break;
         }
@@ -157,7 +159,7 @@ public class GameManager : MonoBehaviour
         ResetPins();
         message = "New round";
         waitingForPins = false;
-        ballSpawn.SpawnNewBall();
+        SpawnBallAndResetCamera();
         UpdateUI();
     }
 
@@ -173,8 +175,18 @@ public class GameManager : MonoBehaviour
         ResetPinCount();
         ResetRoundScores();
         ResetPins();
-        ballSpawn.SpawnNewBall();
+        SpawnBallAndResetCamera();
         UpdateUI();
+    }
+
+    private void SpawnBallAndResetCamera()
+    {
+        if (cameraSwitch != null)
+        {
+            cameraSwitch.ResetCamera();
+        }
+
+        ballSpawn.SpawnNewBall();
     }
 
     private void ResetRoundScores()
