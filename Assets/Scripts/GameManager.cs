@@ -25,7 +25,6 @@ public class GameManager : MonoBehaviour
     private bool waitingForPins = false;
     public static GameManager Instance;
 
-    // Public getter methods to access force settings from other scripts
     public float StartingThrowForce
     {
         get { return startingThrowForce; }
@@ -49,7 +48,6 @@ public class GameManager : MonoBehaviour
 
     private void Awake() 
     {
-        // set up singleton pattern for treatment of individual pins
         if (Instance == null)
         {
             Instance = this;
@@ -95,6 +93,7 @@ public class GameManager : MonoBehaviour
         message = "Checking pins...";
         UpdateUI();
 
+        // Wait briefly so pins have time to settle before scoring.
         yield return new WaitForSeconds(2f);
 
         int fallenPins = CountFallenPins();
@@ -102,6 +101,7 @@ public class GameManager : MonoBehaviour
 
         if (_ball == 1)
         {
+            // Count only the new pins knocked down on the second ball.
             lastThrowPins = Mathf.Max(0, fallenPins - PinsKnockedOver[0]);
         }
 

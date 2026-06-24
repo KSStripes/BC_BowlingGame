@@ -3,8 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class BallController : MonoBehaviour
 {
-    public Transform ArrowPos;
-
+    private Transform arrowPos;
     private float throwForce;
     private GameManager gameManager;
     private AudioSource audioSource;
@@ -21,7 +20,7 @@ public class BallController : MonoBehaviour
 
         if (arrowController != null)
         {
-            ArrowPos = arrowController.transform;
+            arrowPos = arrowController.transform;
             arrowController.ballThrown = false;
         }
 
@@ -61,18 +60,17 @@ public class BallController : MonoBehaviour
 
         if (arrowController != null)
         {
-            ArrowPos = arrowController.transform;
+            arrowPos = arrowController.transform;
         }
 
-        if (ArrowPos == null || arrowController == null)
+        if (arrowPos == null || arrowController == null)
         {
             Debug.LogWarning("Arrow Transform is Null");
             return;
         }
 
-
-
-        Vector3 pos = ArrowPos.position;
+        // Before launch, keep the ball aligned with the aiming arrow.
+        Vector3 pos = arrowPos.position;
         pos.x = transform.position.x;
         pos.y = transform.position.y;
 
@@ -95,7 +93,9 @@ public class BallController : MonoBehaviour
         {
             _thrown = true;
             arrowController.ballThrown = true;
-            _rb.AddForce(ArrowPos.forward * throwForce, ForceMode.Impulse);
+
+            // Launch the ball with a physics impulse instead of moving it by transform.
+            _rb.AddForce(arrowPos.forward * throwForce, ForceMode.Impulse);
             if (audioSource != null)
             {
                 audioSource.Play();
@@ -103,19 +103,8 @@ public class BallController : MonoBehaviour
         }
     }
 
-    // method to return throwForce for UI
     public float GetThrowForce()
     {
         return throwForce;
     }
-
-    // check for pin hit by pin tag and print
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.tag == "Pin")
-        {
-            Debug.Log(collision.gameObject.name);
-        }
-    }
-
 }

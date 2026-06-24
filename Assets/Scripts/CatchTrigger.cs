@@ -1,13 +1,10 @@
 using UnityEngine;
 
-
-
 public class CatchTrigger : MonoBehaviour
 {
-    public BallSpawn spawner;
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.CompareTag("Player"))
         {
             Destroy(other.gameObject, 2f); // make ball disappear after 2s
             
@@ -15,7 +12,6 @@ public class CatchTrigger : MonoBehaviour
             {
                 GameManager.Instance.BallReachedReturn();
             }
-            //spawner.SpawnNewBall();
         }
     }
 }

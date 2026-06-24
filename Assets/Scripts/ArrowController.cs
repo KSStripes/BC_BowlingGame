@@ -1,12 +1,9 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Animator))]
 public class ArrowController : MonoBehaviour
 {
     public float moveSpeed = 1;
-
-    public Transform ArrowPos;
 
     private Animator _animator;
 
@@ -17,19 +14,11 @@ public class ArrowController : MonoBehaviour
     private void Awake()
     {
         _animator = GetComponent<Animator>();
-        ArrowPos = FindAnyObjectByType<ArrowController>().transform;
     }
 
     private void Update()
     {
         _animator.SetBool("Thrown", ballThrown);
-
-
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
-
 
         if (ballThrown) return;
 

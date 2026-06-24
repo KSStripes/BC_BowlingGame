@@ -1019,7 +1019,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03f797071d0424855981598f96ecb7eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawner: {fileID: 1149919228}
 --- !u!65 &608102705
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5026,6 +5025,10 @@ PrefabInstance:
     - target: {fileID: 2902582767147295826, guid: 14350cce62e754f24a30ca5b8c193bd8, type: 3}
       propertyPath: m_Name
       value: Bowling Alley
+      objectReference: {fileID: 0}
+    - target: {fileID: 8711530316579111134, guid: 14350cce62e754f24a30ca5b8c193bd8, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 240.26001
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
