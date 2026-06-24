@@ -5,7 +5,9 @@ public class BallController : MonoBehaviour
 {
     public Transform ArrowPos;
 
-    public float ThrowForce = 50;
+    private float throwForce;
+    private GameManager gameManager;
+    private ArrowController arrowController;
 
     private bool _thrown = false;
     private Rigidbody _rb;
@@ -13,15 +15,54 @@ public class BallController : MonoBehaviour
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
-        ArrowPos = FindAnyObjectByType<ArrowController>().transform;
-        ArrowPos.GetComponent<ArrowController>().ballThrown = false;
+        arrowController = FindAnyObjectByType<ArrowController>();
+
+        if (arrowController != null)
+        {
+            ArrowPos = arrowController.transform;
+            arrowController.ballThrown = false;
+        }
+
+        gameManager = GameManager.Instance;
+
+        if (gameManager == null)
+        {
+            gameManager = FindAnyObjectByType<GameManager>();
+        }
+
+        if (gameManager != null)
+        {
+            throwForce = gameManager.StartingThrowForce;
+        }
     }
 
     private void Update()
     {
+        if (gameManager == null)
+        {
+            gameManager = GameManager.Instance;
+
+            if (gameManager == null)
+            {
+                return;
+            }
+
+            throwForce = gameManager.StartingThrowForce;
+        }
+        
         if (_thrown) return;
 
-        if (ArrowPos == null)
+        if (arrowController == null)
+        {
+            arrowController = FindAnyObjectByType<ArrowController>();
+        }
+
+        if (arrowController != null)
+        {
+            ArrowPos = arrowController.transform;
+        }
+
+        if (ArrowPos == null || arrowController == null)
         {
             Debug.LogWarning("Arrow Transform is Null");
             return;
@@ -35,15 +76,34 @@ public class BallController : MonoBehaviour
 
         transform.position = pos;
 
+        // Up arrow increases force, Down arrow decreases force.
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            throwForce += gameManager.ForceChangeSpeed * Time.deltaTime;
+        }
+
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            throwForce -= gameManager.ForceChangeSpeed * Time.deltaTime;
+        }
+
+        throwForce = Mathf.Clamp(throwForce, gameManager.MinThrowForce, gameManager.MaxThrowForce);
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             _thrown = true;
-            ArrowPos.GetComponent<ArrowController>().ballThrown = true;
-            _rb.AddForce(ArrowPos.forward * ThrowForce, ForceMode.Impulse);
+            arrowController.ballThrown = true;
+            _rb.AddForce(ArrowPos.forward * throwForce, ForceMode.Impulse);
         }
     }
 
-// check for pin hit by pin tag and print
+    // method to return throwForce for UI
+    public float GetThrowForce()
+    {
+        return throwForce;
+    }
+
+    // check for pin hit by pin tag and print
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Pin")

@@ -2122,6 +2122,10 @@ MonoBehaviour:
   - {fileID: 1967986020}
   message: 
   gameOver: 0
+  startingThrowForce: 90
+  minThrowForce: 50
+  maxThrowForce: 110
+  forceChangeSpeed: 30
 --- !u!114 &894138596
 MonoBehaviour:
   m_ObjectHideFlags: 0

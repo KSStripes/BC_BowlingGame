@@ -10,7 +10,11 @@ public class CatchTrigger : MonoBehaviour
         if (other.gameObject.tag == "Player")
         {
             Destroy(other.gameObject, 2f); // make ball disappear after 2s
-            GameManager.Instance.BallReachedReturn();
+            
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.BallReachedReturn();
+            }
             //spawner.SpawnNewBall();
         }
     }

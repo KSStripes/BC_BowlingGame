@@ -14,10 +14,37 @@ public class GameManager : MonoBehaviour
     public string message = "";
     public bool gameOver = false;
 
+    [Header("Throw Force Settings")]
+    [SerializeField] private float startingThrowForce = 90f;
+    [SerializeField] private float minThrowForce = 50f;
+    [SerializeField] private float maxThrowForce = 110f;
+    [SerializeField] private float forceChangeSpeed = 30f;
+
     private BallSpawn ballSpawn;
     private BowlingUI ui;
     private bool waitingForPins = false;
     public static GameManager Instance;
+
+    // Public getter methods to access force settings from other scripts
+    public float StartingThrowForce
+    {
+        get { return startingThrowForce; }
+    }
+
+    public float MinThrowForce
+    {
+        get { return minThrowForce; }
+    }
+
+    public float MaxThrowForce
+    {
+        get { return maxThrowForce; }
+    }
+
+    public float ForceChangeSpeed
+    {
+        get { return forceChangeSpeed; }
+    }
 
 
     private void Awake() 

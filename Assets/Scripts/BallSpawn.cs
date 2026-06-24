@@ -13,6 +13,18 @@ public class BallSpawn : MonoBehaviour
 
     public void SpawnNewBall()
     {
+        if (ballPrefabs == null || ballPrefabs.Length == 0)
+        {
+            if (ballPrefab == null)
+            {
+                Debug.LogWarning("No ball prefab assigned to BallSpawn.");
+                return;
+            }
+
+            Instantiate(ballPrefab, transform.position, ballPrefab.transform.rotation);
+            return;
+        }
+
         // Get a random index from our ball prefab array, and use the random ball selected to spawn
         int randIndex = Random.Range(0, ballPrefabs.Length);
 
