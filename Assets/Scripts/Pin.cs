@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// Represents a bowling pin. Detects when it's knocked over based on tilt angle
+/// and plays a sound effect. Can be reset to its starting position.
+/// </summary>
 public class Pin : MonoBehaviour
 {
     public float tiltThreshold = 30f;
@@ -26,6 +30,7 @@ public class Pin : MonoBehaviour
         }
     }
 
+    //Returns true if the pin is tilted past the threshold angle.
     public bool IsPinKnockedOver()
     {
         // A pin is counted as fallen when it tilts past the threshold angle.
@@ -33,6 +38,7 @@ public class Pin : MonoBehaviour
         return (angle > tiltThreshold);
     }
 
+    //Resets the pin to its starting position and rotation.
     public void ResetPin()
     {
         GetComponent<Rigidbody>().linearVelocity = Vector3.zero;

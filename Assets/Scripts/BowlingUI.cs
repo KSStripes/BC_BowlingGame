@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// Displays game stats and controls on screen using the OnGUI system.
+/// Shows current round, score, throw force, and player control instructions.
+/// </summary>
 public class BowlingUI : MonoBehaviour
 {
     private string displayText = "";
@@ -19,6 +23,7 @@ public class BowlingUI : MonoBehaviour
         }
     }
 
+    //Updates the display text with current game information.
     public void UpdateUI(GameManager game)
     {
         int ballNumber = game._ball + 1;

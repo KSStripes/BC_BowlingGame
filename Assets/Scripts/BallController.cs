@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// Handles ball physics, player input for aiming and throwing, and force adjustment.
+/// Keeps the ball aligned with the arrow until thrown.
+/// </summary>
 [RequireComponent(typeof(Rigidbody))]
 public class BallController : MonoBehaviour
 {
@@ -94,7 +98,7 @@ public class BallController : MonoBehaviour
             _thrown = true;
             arrowController.ballThrown = true;
 
-            // Launch the ball with a physics impulse instead of moving it by transform.
+            //Launch the ball with physics force in the arrow's forward direction.
             _rb.AddForce(arrowPos.forward * throwForce, ForceMode.Impulse);
             if (audioSource != null)
             {

@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Controls the aiming arrow visual, allowing the player to move it left and right to aim the throw.
+/// </summary>
 [RequireComponent(typeof(Animator))]
 public class ArrowController : MonoBehaviour
 {
@@ -11,11 +14,13 @@ public class ArrowController : MonoBehaviour
 
     public bool ballThrown = false;
 
+    //Get the animator component and initializes it.
     private void Awake()
     {
         _animator = GetComponent<Animator>();
     }
 
+    // Update arrow animation and handles left/right movement input.
     private void Update()
     {
         _animator.SetBool("Thrown", ballThrown);

@@ -1,10 +1,15 @@
 using UnityEngine;
 
+/// <summary>
+/// Handles spawning a new ball at the start of each throw.
+/// Can spawn a single prefab or randomly select from an array of ball prefabs.
+/// </summary>
 public class BallSpawn : MonoBehaviour
 {
     public GameObject ballPrefab;
     public GameObject[] ballPrefabs;
 
+    //Create a new ball at the spawn position.
     public void SpawnNewBall()
     {
         if (ballPrefabs == null || ballPrefabs.Length == 0)

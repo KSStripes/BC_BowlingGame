@@ -1,21 +1,24 @@
 using Unity.Mathematics;
 using UnityEngine;
 
+/// <summary>
+/// A practice script from lesson 4 that moves and rotates a cube based on player input.
+/// This is a learning exercise and not used in the main game.
+/// </summary>
 public class Lesson4MoveCube : MonoBehaviour
 {
-    // Declare variables for movement
-    //public Vector3 MoveAmount;
+    // Variables for movement
     public int MoveSpeed = 5;
     public int RotationSpeed = 15;
 
     public float hMove;
     public float vMove;
 
-    // Declare variables for surface
+    // Variables for surface appearance
     public MeshRenderer meshRenderer;
     public Material mat;
 
-    // Start is called once before the first execution of Update 
+    /// <summary>Assigns the material to the cube at startup.</summary>
     void Start()
     {
         // check if we have a mesh renderer
@@ -26,7 +29,7 @@ public class Lesson4MoveCube : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
+    /// <summary>Reads input and moves/rotates the cube based on WASD input.</summary>
     void Update()
     {
         hMove = Input.GetAxis("Horizontal");

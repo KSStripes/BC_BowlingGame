@@ -1,6 +1,10 @@
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// Manages the overall game flow, scoring, and round progression for the bowling game.
+/// Handles pin counting, round management, and game state.
+/// </summary>
 public class GameManager : MonoBehaviour
 {
     public int Round = 1;
@@ -46,7 +50,7 @@ public class GameManager : MonoBehaviour
         get { return forceChangeSpeed; }
     }
 
-
+    // Set up the singleton instance and initializes game data.
     private void Awake() 
     {
         if (Instance == null)
@@ -70,6 +74,7 @@ public class GameManager : MonoBehaviour
         StartGame();
     }
 
+    // Allows restarting the game by pressing L.
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.L))
@@ -78,6 +83,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    //Called when the ball reaches the return area. Triggers pin checking.
     public void BallReachedReturn()
     {
         if (waitingForPins || gameOver)
@@ -89,6 +95,7 @@ public class GameManager : MonoBehaviour
     }
 
 
+    // Waits for pins to settle, counts fallen pins, and determines if a second ball is needed.
     private IEnumerator CheckforFallenPins()
     {
         waitingForPins = true;
@@ -101,9 +108,9 @@ public class GameManager : MonoBehaviour
         int fallenPins = CountFallenPins();
         lastThrowPins = fallenPins;
 
+        // On second ball, only count NEW pins knocked over
         if (_ball == 1)
         {
-            // Count only the new pins knocked down on the second ball.
             lastThrowPins = Mathf.Max(0, fallenPins - PinsKnockedOver[0]);
         }
 
@@ -112,6 +119,7 @@ public class GameManager : MonoBehaviour
 
         UpdateUI();
 
+        // If first ball didn't knock down all pins, player gets a second ball
         if (_ball == 0 && fallenPins < pins.Length)
         {
             _ball = 1;
@@ -140,10 +148,12 @@ public class GameManager : MonoBehaviour
         return count;
     }
 
+    // Saves the round score and either starts the next round or ends the game.
     private void FinishRound()
     {
         RoundScore[Round - 1] = PinsKnockedOver[0] + PinsKnockedOver[1];
 
+        // Check if game is over
         if (Round >= totalRounds)
         {
             gameOver = true;
@@ -153,6 +163,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        // Set up next round
         Round++;
         _ball = 0;
         ResetPinCount();
@@ -163,6 +174,7 @@ public class GameManager : MonoBehaviour
         UpdateUI();
     }
 
+    // Resets all game variables to start a fresh game.
     public void StartGame()
     {
         Round = 1;
@@ -179,6 +191,7 @@ public class GameManager : MonoBehaviour
         UpdateUI();
     }
 
+    // Resets the camera view and spawns a new ball for the current throw.
     private void SpawnBallAndResetCamera()
     {
         if (cameraSwitch != null)

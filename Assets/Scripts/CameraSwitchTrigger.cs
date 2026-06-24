@@ -1,12 +1,15 @@
 using UnityEngine;
 
-// Script to switch cameras when the player enters a trigger zone
-
+/// <summary>
+/// Switches between cameras when the ball enters a trigger zone.
+/// Used to show the pins from a different angle when the ball reaches them.
+/// </summary>
 public class CameraSwitchTrigger : MonoBehaviour
 {
     public Camera mainCamera;
     public Camera pinCamera;
 
+    //Switches to the pin camera when the ball enters the trigger.
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -21,6 +24,8 @@ public class CameraSwitchTrigger : MonoBehaviour
             pinCamera.gameObject.SetActive(true);
         }
     }
+
+    //Switches back to the main camera.
     public void ResetCamera()
     {
         if (mainCamera == null || pinCamera == null)
