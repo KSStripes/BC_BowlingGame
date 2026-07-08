@@ -1,6 +1,6 @@
 # BC Bowling Game
 
-A Unity bowling game prototype created during bootcamp coursework.
+A Unity bowling game prototype created for a Graphics Animation course.
 
 ## Overview
 
